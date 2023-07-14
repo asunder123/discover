@@ -1,22 +1,48 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Process Monitor</title>
-    <!-- Include necessary CSS and JS files -->
-    <link rel="stylesheet" href="https://cdn.plot.ly/plotly-latest.min.css">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Process Monitoring</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        #cpuTimeSeries, #memoryTimeSeries, #pieChart, #dependencyGraph {
+            width: 800px;
+            height: 400px;
+            margin: 20px auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Process Monitor</h1>
-    <p>Click the button below to discover running processes.</p>
-    
-    <button id="discoverBtn" onclick="discoverProcesses()">Discover</button>
-    
+    <h1>Process Monitoring</h1>
+
+    <div id="cpuTimeSeries"></div>
+    <div id="memoryTimeSeries"></div>
+    <div id="pieChart"></div>
+    <div id="dependencyGraph"></div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/graph.js') }}"></script>
     <script>
-        function discoverProcesses() {
-            window.location.href = '/discover';
+        // Fetch updated data and render charts
+        function fetchData() {
+            fetch('/updated_data')
+                .then(response => response.json())
+                .then(data => {
+                    renderTimeSeriesCharts(data.cpuTimeSeries, data.memoryTimeSeries);
+                    renderPieChart(data.processes);
+                    renderDependencyGraph(data.dependency);
+                })
+                .catch(error => console.log(error));
         }
+
+        // Refresh data every 5 seconds
+        setInterval(fetchData, 5000);
+
+        // Initial data fetch and chart rendering
+        fetchData();
     </script>
 </body>
 </html>
