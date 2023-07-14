@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Discover</title>
+    <!-- Include necessary CSS and JS files -->
+    <link rel="stylesheet" href="https://cdn.plot.ly/plotly-latest.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Running Processes</h1>
+    
+    <!-- Add div elements to render the charts -->
+    <div id="cpuChart"></div>
+    <div id="memoryChart"></div>
+    
+    <script>
+        // Fetch process data from the server
+        $.getJSON('/get_process_data', function (data) {
+            renderCharts(data);
+        });
+        
+        function renderCharts(processes) {
+            var pid = processes.map(function (process) {
+                return process.pid;
+            });
+            var cpuUsage = processes.map(function (process) {
+                return process.cpu_usage;
+            });
+            var memoryUsage = processes.map(function (process) {
+                return process.memory_usage;
+            });
+            
+            var cpuChart = {
+                x: pid,
+                y: cpuUsage,
+                mode: 'lines',
+                type: 'scatter',
+                name: 'CPU Usage (%)'
+            };
+            
+            var memoryChart = {
+                x: pid,
+                y: memoryUsage,
+                mode: 'lines',
+                type: 'scatter',
+                name: 'Memory Usage (%)'
+            };
+            
+            var cpuLayout = {
+                title: 'CPU Usage',
+                xaxis: { title: 'PID' },
+                yaxis: { title: 'CPU Usage (%)' }
+            };
+            
+            var memoryLayout = {
+                title: 'Memory Usage',
+                xaxis: { title: 'PID' },
+                yaxis: { title: 'Memory Usage (%)' }
+            };
+            
+            Plotly.newPlot('cpuChart', [cpuChart], cpuLayout);
+            Plotly.newPlot('memoryChart', [memoryChart], memoryLayout);
+        }
+    </script>
+</body>
+</html>

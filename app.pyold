@@ -1,0 +1,30 @@
+from flask import Flask, render_template
+import subprocess
+import json
+import re
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/discover')
+def discover():
+    # Run 'wsl --list --json' command to get the list of WSL distributions
+    result = subprocess.run(['cmd.exe', '/c', 'wslconfig', '/l'], capture_output=True, text=True)
+
+    if result.returncode == 0:
+        # Parse the JSON output
+        output = result.stdout
+        #distributions = re.findall(r'(\S+)\s+\(Default', output)
+        distributions=[line.strip() for line in output.split('\n') if line.strip() != '']
+
+        return render_template('discover.html', distributions=distributions)
+
+    else:
+        error_msg = result.stderr
+        return render_template('error.html', error=error_msg)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

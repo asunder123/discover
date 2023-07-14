@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Process Monitor</title>
+    <!-- Include necessary CSS and JS files -->
+    <link rel="stylesheet" href="https://cdn.plot.ly/plotly-latest.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Welcome to Process Monitor</h1>
+    <p>Click the button below to discover running processes.</p>
+    
+    <button id="discoverBtn" onclick="discoverProcesses()">Discover</button>
+    
+    <script>
+        function discoverProcesses() {
+            window.location.href = '/discover';
+        }
+    </script>
+</body>
+</html>
